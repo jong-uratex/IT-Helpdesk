@@ -1,6 +1,6 @@
 {
-  "name": "Uratex IT Service Desk",
-  "description": "IT Service Ticketing System with ROBBIE AI Assistant for Uratex Philippines",
+  "name": "Uratex Philippines IT Service Desk & ROBBIE AI",
+  "description": "Enterprise IT service ticketing system for Uratex Philippines with ROBBIE AI chatbot, AdminLTE dashboards, and pure PHP Apache/NGINX package.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
