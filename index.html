@@ -1,21 +1,620 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Uratex IT Service Desk — ROBBIE AI & Ticketing</title>
-    <meta name="description" content="IT Service Ticketing System with ROBBIE AI Assistant for Uratex Philippines employees and IT support." />
-    <meta property="og:title" content="Uratex IT Service Desk — ROBBIE AI & Ticketing" />
-    <meta property="og:description" content="IT Service Ticketing System with ROBBIE AI Assistant for Uratex Philippines employees and IT support." />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Uratex Philippines IT Service Desk & ROBBIE AI</title>
+  <meta name="description" content="Enterprise IT service ticketing system for Uratex Philippines with ROBBIE AI chatbot, AdminLTE dashboards, and pure PHP Apache/NGINX package." />
+  <meta property="og:title" content="Uratex Philippines IT Service Desk & ROBBIE AI" />
+  <meta property="og:description" content="Enterprise IT service ticketing system for Uratex Philippines with ROBBIE AI chatbot, AdminLTE dashboards, and pure PHP Apache/NGINX package." />
 
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- AdminLTE 3 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light border-bottom">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="#" id="nav-user" class="nav-link active nav-tab-link font-weight-bold" onclick="switchView('user')">
+          <i class="fas fa-robot text-warning mr-1"></i> User Desk & ROBBIE
+        </a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="#" id="nav-admin" class="nav-link nav-tab-link font-weight-bold" onclick="switchView('admin')">
+          <i class="fas fa-tachometer-alt text-danger mr-1"></i> IT Admin Dashboard
+        </a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="#" id="nav-php" class="nav-link nav-tab-link font-weight-bold" onclick="switchView('php')">
+          <i class="fab fa-php text-primary mr-1"></i> PHP Server Files
+        </a>
+      </li>
+    </ul>
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto align-items-center">
+      <li class="nav-item mr-3">
+        <span class="badge badge-success px-2 py-1" onclick="promptGoogleLogin()" style="cursor: pointer;" title="Click to test account switch">
+          <i class="fab fa-google mr-1"></i> @uratex.com.ph Verified
+        </span>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+          <i class="far fa-bell"></i>
+          <span class="badge badge-danger navbar-badge" id="badge-open-count">3</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+          <span class="dropdown-header">Uratex IT Alerts</span>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item" onclick="switchView('admin')">
+            <i class="fas fa-exclamation-triangle text-danger mr-2"></i> SAP S/4HANA Error 10060
+          </a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" onclick="promptGoogleLogin()">
+          <i class="fas fa-user-circle text-primary mr-1"></i>
+          <span id="user-email-display" class="font-weight-bold">marketing@uratex.com.ph</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Sidebar -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <a href="#" class="brand-link">
+      <span class="brand-text font-weight-bold ml-3 text-uratex-yellow">URATEX</span>
+      <span class="brand-text text-white small ml-1">IT Service Desk</span>
+    </a>
+
+    <div class="sidebar">
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
+        <div class="image">
+          <i class="fas fa-building text-warning fa-2x ml-2"></i>
+        </div>
+        <div class="info">
+          <a href="#" class="d-block font-weight-bold">Uratex Philippines</a>
+          <small class="text-muted">RGC Group of Companies</small>
+        </div>
+      </div>
+
+      <!-- Facility Plant Selector -->
+      <div class="form-group px-2">
+        <label class="text-muted small mb-1">Your Plant / Location:</label>
+        <select class="form-control form-control-sm bg-dark text-white border-secondary" id="plant-select" onchange="currentPlant = this.value">
+          <option selected>Muntinlupa Head Office</option>
+          <option>Valenzuela Foam Plant</option>
+          <option>Canlubang Plant (Laguna)</option>
+          <option>Plaridel Plant (Bulacan)</option>
+          <option>Cebu Plant & Showroom</option>
+          <option>Davao Plant (Mindanao)</option>
+        </select>
+      </div>
+
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column">
+          <li class="nav-header">EMPLOYEE SELF-SERVICE</li>
+          <li class="nav-item">
+            <a href="#" id="side-robbie" class="nav-link sidebar-link active" onclick="switchSection('robbie')">
+              <i class="nav-icon fas fa-robot text-warning"></i>
+              <p>ROBBIE AI Assistant</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" id="side-new-ticket" class="nav-link sidebar-link" onclick="switchSection('new-ticket')">
+              <i class="nav-icon fas fa-plus-circle text-info"></i>
+              <p>Submit IT Ticket</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" id="side-my-tickets" class="nav-link sidebar-link" onclick="switchSection('my-tickets')">
+              <i class="nav-icon fas fa-tasks text-success"></i>
+              <p>Track My Tickets</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" id="side-directory" class="nav-link sidebar-link" onclick="switchSection('directory')">
+              <i class="nav-icon fas fa-address-book text-primary"></i>
+              <p>IT Staff Directory <span class="badge badge-warning right">48</span></p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" id="side-rules" class="nav-link sidebar-link" onclick="switchSection('rules')">
+              <i class="nav-icon fas fa-shield-alt text-purple"></i>
+              <p>R.O.B.B.I.E Rules <span class="badge badge-info right">12</span></p>
+            </a>
+          </li>
+
+          <li class="nav-header">IT DEPARTMENT</li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" onclick="switchView('admin')">
+              <i class="nav-icon fas fa-tachometer-alt text-danger"></i>
+              <p>Admin Dashboard</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" onclick="switchView('php')">
+              <i class="nav-icon fab fa-php text-primary"></i>
+              <p>PHP Server Files</p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- Content Wrapper -->
+  <div class="content-wrapper p-3">
+
+    <!-- VIEW 1: USER DESK -->
+    <div id="view-user">
+      <!-- ROBBIE AI SECTION -->
+      <div id="section-robbie" class="user-section">
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="card card-primary card-outline shadow-sm">
+              <div class="card-header bg-uratex">
+                <h3 class="card-title font-weight-bold">
+                  <i class="fas fa-robot mr-2 text-warning"></i> ROBBIE - Resolution Oriented Bot for Business & IT Efficiency
+                </h3>
+                <div class="card-tools">
+                  <span class="badge badge-light text-primary">Gemini 3.8 Flash • Official Uratex Rules Active</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chat-container" id="chat-box">
+                  <div class="chat-msg bot">
+                    <div class="chat-bubble bot">
+                      <strong>Kumusta! I am ROBBIE</strong> (Resolution Oriented Bot for Business and IT Efficiency), your official Uratex Philippines IT Helpdesk Assistant.<br><br>
+                      I operate under approved Uratex technical rules to assist you with:<br>
+                      - 🏢 <strong>SAP S/4HANA & ECC</strong> (Error 10060, O2C orders VA01/VA02, VL01N, VF01)<br>
+                      - ✉️ <strong>Uratex Email Signature Generator</strong> (https://email-signature-4ti.pages.dev)<br>
+                      - 🏷️ <strong>Zebra Barcode & Label Printers</strong> (ribbon calibration, paper jams)<br>
+                      - 🌐 <strong>FortiClient VPN & Plant Networks</strong><br>
+                      - 👥 <strong>Uratex IT Directory</strong> (connecting you with our 48 specialists across Luzon & VisMin)<br><br>
+                      <em>How can I assist you today?</em>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Quick Prompts (Integrated with Prompt Rules & Directory) -->
+                <div class="mt-2 mb-2 d-flex flex-wrap" style="gap: 6px;">
+                  <button class="btn btn-xs btn-outline-primary" onclick="sendQuickPrompt('How do I create my official Uratex Email Signature?')">Email Signature Setup</button>
+                  <button class="btn btn-xs btn-outline-primary" onclick="sendQuickPrompt('URIE Order-to-Cash (O2C) sales order VA01 and delivery VL01N guide')">URIE O2C Sales Order</button>
+                  <button class="btn btn-xs btn-outline-secondary" onclick="sendQuickPrompt('Who is the SAP Support specialist for Luzon?')">Find SAP Support</button>
+                  <button class="btn btn-xs btn-outline-secondary" onclick="sendQuickPrompt('SAP S/4HANA Error 10060 WSAETIMEDOUT')">SAP 10060 Timeout</button>
+                  <button class="btn btn-xs btn-outline-secondary" onclick="sendQuickPrompt('Zebra ZT411 label printer paper ribbon jam')">Zebra Ribbon Jam</button>
+                  <button class="btn btn-xs btn-outline-danger" onclick="escalateToTicket('Human IT technician assistance requested')">Request Human Help</button>
+                </div>
+
+                <div class="input-group">
+                  <input type="text" id="chat-input" class="form-control" placeholder="Ask ROBBIE about SAP O2C, email signatures, printers, VPN, or IT staff..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+                  <div class="input-group-append">
+                    <button class="btn btn-primary bg-uratex" onclick="sendChatMessage()">
+                      <i class="fas fa-paper-plane mr-1"></i> Ask ROBBIE
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="card card-outline card-warning shadow-sm">
+              <div class="card-header">
+                <h3 class="card-title font-weight-bold"><i class="fas fa-hands-helping text-warning mr-1"></i> Need Urgent Help?</h3>
+              </div>
+              <div class="card-body">
+                <p class="small text-muted">If ROBBIE cannot solve your hardware fault or network downtime, file an official ticket to page IT staff.</p>
+                <button class="btn btn-warning btn-block font-weight-bold mb-3" onclick="switchSection('new-ticket')">
+                  <i class="fas fa-file-alt mr-1"></i> File Support Ticket
+                </button>
+                <div class="callout callout-info py-2">
+                  <h6 class="font-weight-bold mb-1">Uratex IT Management</h6>
+                  <p class="small mb-0">Manager: <strong>Eric Borromeo</strong><br>Local: <strong>2110 / 2112</strong><br>Mobile: <strong>09178224595</strong><br>Email: <strong>eric.borromeo@uratex.com.ph</strong></p>
+                </div>
+                <button class="btn btn-sm btn-outline-primary btn-block" onclick="switchSection('directory')">
+                  <i class="fas fa-search mr-1"></i> Browse 48 IT Personnel Directory
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEW TICKET FORM SECTION -->
+      <div id="section-new-ticket" class="user-section" style="display: none;">
+        <div class="card card-primary card-outline shadow-sm">
+          <div class="card-header bg-uratex">
+            <h3 class="card-title font-weight-bold"><i class="fas fa-edit mr-2"></i> Submit IT Technical Support Ticket</h3>
+          </div>
+          <form onsubmit="submitTicket(event)">
+            <div class="card-body">
+              <div id="escalate-banner" class="alert alert-info" style="display: none;">
+                <h5><i class="icon fas fa-info"></i> Pre-filled by ROBBIE AI Assistant</h5>
+                Your inquiry has been summarized for the designated Uratex IT Support team.
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 form-group">
+                  <label>Employee Name</label>
+                  <input type="text" id="t-name" class="form-control" value="Marketing Specialist" required>
+                </div>
+                <div class="col-md-6 form-group">
+                  <label>Corporate Email (@uratex.com.ph)</label>
+                  <input type="email" id="t-email" class="form-control" value="marketing@uratex.com.ph" required>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4 form-group">
+                  <label>Category</label>
+                  <select id="t-category" class="form-control">
+                    <option>SAP / ERP</option>
+                    <option>Hardware & Printers</option>
+                    <option>Network & VPN</option>
+                    <option>Email & Microsoft 365</option>
+                    <option>Access & Security</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="col-md-4 form-group">
+                  <label>Priority (SLA)</label>
+                  <select id="t-priority" class="form-control">
+                    <option value="Urgent">🚨 Urgent (Plant/Line Halted - 2h SLA)</option>
+                    <option value="High">⚠️ High (Significant Work Blocked - 4h SLA)</option>
+                    <option value="Medium" selected>⚡ Medium (Standard Support - 8h SLA)</option>
+                    <option value="Low">ℹ️ Low (Inquiry - 24h SLA)</option>
+                  </select>
+                </div>
+                <div class="col-md-4 form-group">
+                  <label>Plant Location</label>
+                  <select id="t-plant" class="form-control">
+                    <option>Muntinlupa Head Office</option>
+                    <option>Valenzuela Plant</option>
+                    <option>Canlubang Plant</option>
+                    <option>Plaridel Plant</option>
+                    <option>Cebu Plant & Showroom</option>
+                    <option>Davao Plant</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 form-group">
+                  <label>Department</label>
+                  <input type="text" id="t-dept" class="form-control" value="Marketing & Brand Strategy" required>
+                </div>
+                <div class="col-md-6 form-group">
+                  <label>Local Intercom / Contact</label>
+                  <input type="text" id="t-contact" class="form-control" value="Local 2088">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Issue Subject</label>
+                <input type="text" id="t-subject" class="form-control" placeholder="Brief summary of the issue" required>
+              </div>
+
+              <div class="form-group">
+                <label>Detailed Description</label>
+                <textarea id="t-description" class="form-control" rows="3" placeholder="Exact symptoms, error messages, computer IP/hostname..." required></textarea>
+              </div>
+
+              <div class="form-group">
+                <label>ROBBIE AI Transcript (Optional)</label>
+                <textarea id="t-robbie-notes" class="form-control bg-light" rows="2" readonly></textarea>
+              </div>
+            </div>
+            <div class="card-footer d-flex justify-content-between">
+              <button type="button" class="btn btn-default" onclick="switchSection('robbie')">Cancel</button>
+              <button type="submit" class="btn btn-primary bg-uratex"><i class="fas fa-paper-plane mr-1"></i> Submit Ticket & Alert IT Team</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- MY TICKETS TRACKER SECTION -->
+      <div id="section-my-tickets" class="user-section" style="display: none;">
+        <div class="card card-outline card-primary shadow-sm">
+          <div class="card-header">
+            <h3 class="card-title font-weight-bold"><i class="fas fa-list-alt mr-1"></i> Track My Tickets & Real-Time Status</h3>
+            <div class="card-tools">
+              <button class="btn btn-sm btn-outline-primary" onclick="fetchTickets()"><i class="fas fa-sync-alt mr-1"></i> Refresh</button>
+            </div>
+          </div>
+          <div class="card-body table-responsive p-0">
+            <table class="table table-hover text-nowrap">
+              <thead>
+                <tr>
+                  <th>Ticket #</th>
+                  <th>Subject</th>
+                  <th>Category</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Assigned Tech</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="user-tickets-tbody">
+                <tr><td colSpan="7" class="text-center py-4">Loading tickets...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- IT DIRECTORY SECTION (48 STAFF MEMBERS) -->
+      <div id="section-directory" class="user-section" style="display: none;">
+        <div class="card card-outline card-primary shadow-sm">
+          <div class="card-header bg-uratex d-flex justify-content-between align-items-center">
+            <h3 class="card-title font-weight-bold">
+              <i class="fas fa-address-book mr-2 text-warning"></i> Uratex Philippines IT Personnel Directory
+            </h3>
+            <span class="badge badge-light font-weight-bold" id="directory-count-badge">48 Staff Members</span>
+          </div>
+          <div class="card-body p-3">
+            <div class="row mb-3">
+              <div class="col-md-6 mb-2">
+                <input type="text" id="dir-search" class="form-control" placeholder="Search by name, role, email, plant..." onkeyup="filterDirectory()">
+              </div>
+              <div class="col-md-6">
+                <select id="dir-dept-filter" class="form-control" onchange="filterDirectory()">
+                  <option value="all">All Departments</option>
+                  <option value="SUPPORT LUZON">SUPPORT LUZON (Application Support)</option>
+                  <option value="TECH LUZON">TECH LUZON (Infrastructure)</option>
+                  <option value="TECH VISMIN">TECH VISMIN (Infrastructure)</option>
+                  <option value="SUPPORT VISMIN">SUPPORT VISMIN (Sap Support)</option>
+                  <option value="BSA">BSA (Business System Analyst)</option>
+                  <option value="DEV">DEV (Software Developers)</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-responsive" style="max-height: 520px; overflow-y: auto;">
+              <table class="table table-hover table-striped text-nowrap">
+                <thead class="bg-light sticky-top">
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Department</th>
+                    <th>Plant / Location</th>
+                    <th>Email</th>
+                    <th>Mobile</th>
+                  </tr>
+                </thead>
+                <tbody id="directory-tbody">
+                  <tr><td colspan="7" class="text-center py-4">Loading directory...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROBBIE RULES SECTION (12 OFFICIAL SYSTEM RULES) -->
+      <div id="section-rules" class="user-section" style="display: none;">
+        <div class="card card-outline card-purple shadow-sm">
+          <div class="card-header bg-purple text-white">
+            <h3 class="card-title font-weight-bold">
+              <i class="fas fa-shield-alt mr-2 text-warning"></i> R.O.B.B.I.E Core Persona & System Rules
+            </h3>
+            <div class="card-tools">
+              <span class="badge badge-light text-purple">From prompt_64e1d06d.csv</span>
+            </div>
+          </div>
+          <div class="card-body p-3">
+            <p class="text-muted small mb-3">
+              Official operating protocols enforced by the IT Service Desk Assistant for Uratex Philippines:
+            </p>
+            <div id="rules-accordion">
+              <!-- Dynamically populated rules -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 2: IT ADMIN DASHBOARD -->
+    <div id="view-admin" style="display: none;">
+      <!-- KPI Boxes -->
+      <div class="row">
+        <div class="col-lg-3 col-6">
+          <div class="small-box bg-info">
+            <div class="inner">
+              <h3 id="kpi-total">5</h3>
+              <p>Total Tickets</p>
+            </div>
+            <div class="icon"><i class="fas fa-ticket-alt"></i></div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-6">
+          <div class="small-box bg-danger">
+            <div class="inner">
+              <h3 id="kpi-urgent">2</h3>
+              <p>Urgent / High Queue</p>
+            </div>
+            <div class="icon"><i class="fas fa-fire"></i></div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-6">
+          <div class="small-box bg-warning">
+            <div class="inner">
+              <h3 id="kpi-open">2</h3>
+              <p>Open & In Progress</p>
+            </div>
+            <div class="icon"><i class="fas fa-clock"></i></div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-6">
+          <div class="small-box bg-success">
+            <div class="inner">
+              <h3 id="kpi-staff-count">48</h3>
+              <p>Active IT Specialists</p>
+            </div>
+            <div class="icon"><i class="fas fa-users"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Incoming Tickets Table -->
+      <div class="card card-outline card-danger shadow-sm">
+        <div class="card-header">
+          <h3 class="card-title font-weight-bold"><i class="fas fa-headset mr-1 text-danger"></i> Incoming Tickets Queue</h3>
+          <div class="card-tools">
+            <button class="btn btn-sm btn-danger font-weight-bold mr-2" onclick="simulateIncomingTicket()">
+              <i class="fas fa-bolt mr-1"></i> Simulate Urgent Incoming Ticket
+            </button>
+            <button class="btn btn-sm btn-default" onclick="fetchTickets()"><i class="fas fa-sync-alt"></i></button>
+          </div>
+        </div>
+        <div class="card-body table-responsive p-0">
+          <table class="table table-hover table-striped text-nowrap">
+            <thead>
+              <tr>
+                <th>Ticket #</th>
+                <th>Subject</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Plant</th>
+                <th>Requester</th>
+                <th>Assigned IT Staff</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-tickets-tbody">
+              <tr><td colSpan="9" class="text-center py-4">Loading queue...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 3: PHP SERVER FILES & DEPLOYMENT -->
+    <div id="view-php" style="display: none;">
+      <div class="card card-outline card-primary shadow-sm">
+        <div class="card-header bg-uratex">
+          <h3 class="card-title font-weight-bold"><i class="fab fa-php mr-2 text-warning"></i> Pure PHP Apache + NGINX Deployment Suite</h3>
+        </div>
+        <div class="card-body">
+          <p class="text-muted small">
+            Designed for your server: <strong>Ubuntu 22.04.5 LTS / Apache 2.4.52 / NGINX / PHP 8.6 / /var/www/html</strong>.
+            All files are available right in your root directory:
+          </p>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card border p-3">
+                <h6 class="font-weight-bold text-primary"><i class="fas fa-file-code mr-1"></i> index.php</h6>
+                <p class="text-muted small mb-2">Complete AdminLTE user & admin dashboard in pure PHP with SQLite zero-config.</p>
+                <a href="/index.php" download="index.php" class="btn btn-xs btn-outline-primary">Download index.php</a>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card border p-3">
+                <h6 class="font-weight-bold text-primary"><i class="fas fa-file-code mr-1"></i> api.php</h6>
+                <p class="text-muted small mb-2">REST API for ROBBIE Gemini cURL calls, ticket submissions, and metrics.</p>
+                <a href="/api.php" download="api.php" class="btn btn-xs btn-outline-primary">Download api.php</a>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card border p-3">
+                <h6 class="font-weight-bold text-primary"><i class="fas fa-file-code mr-1"></i> config.php</h6>
+                <p class="text-muted small mb-2">Gemini API key, Google SSO domain (@uratex.com.ph), and database config.</p>
+                <a href="/config.php" download="config.php" class="btn btn-xs btn-outline-primary">Download config.php</a>
+              </div>
+            </div>
+          </div>
+          <div class="callout callout-info mt-3 py-2">
+            <h6 class="font-weight-bold mb-1">Quick Deployment to /var/www/html:</h6>
+            <code>cp index.php api.php config.php .htaccess /var/www/html/ && sudo chown -R www-data:www-data /var/www/html</code>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="main-footer">
+    <strong>Copyright &copy; 2026 <a href="#">Uratex Philippines - RGC Group of Companies</a>.</strong>
+    All rights reserved. IT Operations & Infrastructure Department.
+  </footer>
+</div>
+
+<!-- Assign Staff Modal (Populated with 48 Directory Members) -->
+<div class="modal fade" id="assignStaffModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title font-weight-bold"><i class="fas fa-user-check mr-2"></i> Assign IT Specialist</h5>
+        <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <label class="font-weight-bold text-xs mb-1">Select from Uratex IT Directory (48 Staff):</label>
+        <select id="staff-assign-select" class="form-control form-control-sm">
+          <!-- Populated from directory_4a5f4575.json -->
+        </select>
+        <small class="text-muted mt-2 d-block">
+          Assigning a specialist sets the ticket status to <strong>In Progress</strong> and notifies the assigned plant technician.
+        </small>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary btn-sm font-weight-bold" onclick="confirmStaffAssign()">Confirm Assignment</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Timeline Modal -->
+<div class="modal fade" id="timelineModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-uratex text-white">
+        <h5 class="modal-title font-weight-bold">Ticket Timeline: <span id="modal-t-num"></span></h5>
+        <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h6 class="font-weight-bold" id="modal-t-subj"></h6>
+        <p class="text-muted small" id="modal-t-desc"></p>
+        <hr>
+        <div class="row text-center mb-3">
+          <div class="col-3 p-2 bg-light border rounded"><strong>1. Created</strong><br><small class="text-success">Filed</small></div>
+          <div class="col-3 p-2 bg-light border rounded"><strong>2. Assigned</strong><br><small id="modal-t-assigned" class="text-primary"></small></div>
+          <div class="col-3 p-2 bg-light border rounded"><strong>3. Working</strong><br><small class="text-warning">In Progress</small></div>
+          <div class="col-3 p-2 bg-light border rounded"><strong>4. Resolved</strong><br><small class="text-muted">Target SLA</small></div>
+        </div>
+        <p class="small mb-1">Plant Location: <strong id="modal-t-plant"></strong></p>
+        <p class="small mb-0">Priority SLA: <strong id="modal-t-sla" class="text-danger"></strong></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Live Alert Toast -->
+<div id="live-toast" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+  <div class="alert alert-warning alert-dismissible shadow-lg fade show">
+    <h6 class="font-weight-bold mb-1" id="toast-title"></h6>
+    <p class="small mb-0" id="toast-msg"></p>
+  </div>
+</div>
+
+<!-- Scripts (jQuery, Bootstrap, AdminLTE, App JS) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>
