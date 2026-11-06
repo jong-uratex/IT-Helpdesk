@@ -1,0 +1,6 @@
+{
+  "name": "Uratex IT Service Desk",
+  "description": "IT Service Ticketing System with ROBBIE AI Assistant for Uratex Philippines",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
